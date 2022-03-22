@@ -1,0 +1,43 @@
+﻿@page "/addArtWork"
+@using LettersAnalyzer.Shared.Models
+@inject HttpClient http
+
+<h3>Add artwork</h3>
+<RadzenCard>
+    <RadzenTemplateForm Data=@_artWork TItem="ArtWork" Submit=@((artWork) => OnSubmit(artWork))>
+        <p>
+            <RadzenLabel Component="Name" Text="Name" class="col-2"></RadzenLabel>
+            <RadzenTextBox Name="Name" @bind-Value="@_artWork.Name"></RadzenTextBox>
+            <RadzenRequiredValidator Component="Name" Text="Name is required"></RadzenRequiredValidator>
+        </p>
+        <p>
+            <RadzenLabel Component="Author" Text="Author" class="col-2"></RadzenLabel>
+            <RadzenTextBox Name="Author" @bind-Value="@_artWork.Author"></RadzenTextBox>
+        </p>
+        <p>
+            <RadzenLabel Component="Country" Text="Country" class="col-2"></RadzenLabel>
+            <RadzenTextBox Name="Country" @bind-Value="@_artWork.Country"></RadzenTextBox>
+        </p>
+        <p>
+            <RadzenLabel Component="Century" Text="Century" class="col-2"></RadzenLabel>
+            <RadzenNumeric Name="Century" TValue="int" Min="10" Max="21" @bind-Value="@_artWork.Century"></RadzenNumeric>
+        </p>
+        <p>
+            <RadzenLabel Component="Text" Text="Text" class="col-2"></RadzenLabel>
+            <RadzenTextArea Name="Text" class="col-12" @bind-Value="@_bodyText"></RadzenTextArea>
+        </p>
+        <p class="text-center">
+            <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
+        </p>
+    </RadzenTemplateForm>
+</RadzenCard>
+
+@code {
+    private ArtWork _artWork = new();
+    private string _bodyText = "";
+
+    public async Task OnSubmit(ArtWork artWork)
+    {
+        await Task.Delay(1000);
+    }
+}
