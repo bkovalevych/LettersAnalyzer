@@ -1,0 +1,58 @@
+﻿@page "/reports"
+@using LettersAnalyzer.Shared
+@using LettersAnalyzer.Shared.Models
+@inject HttpClient Http
+
+<PageTitle>Reports</PageTitle>
+<style>
+    .char-component {
+        margin-top: 10px;
+    }
+</style>
+<h1>Reports</h1>
+
+<p>Reports are here</p>
+
+@if (reports == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="container">
+        <div class="row">
+            @foreach(var report in reports)
+            {
+                <div class="col-sm-12">
+                    <RadzenCard class="char-component">
+                        <h3 class="text-center">Group by @report.GroupBy</h3>
+                        <RadzenChart class="char-component" >
+                            @foreach(var frequency in report.Frequencies)
+                            {
+                                <RadzenAreaSeries Data="@frequency.Value" CategoryProperty="Letter" Title="@frequency.Label" ValueProperty="Count" />                   
+                            }
+                        <RadzenValueAxis>
+                            <RadzenGridLines Visible="true" />
+                            <RadzenAxisTitle Text="Frequency" />
+                        </RadzenValueAxis>
+                        </RadzenChart>
+                    </RadzenCard>
+                </div>
+            }
+        </div> 
+    </div>
+}
+
+@code {
+    private FrequencyReport[]? reports;
+
+    protected override async Task OnInitializedAsync()
+    {
+        
+        reports = await Task.WhenAll(
+            Http.GetFromJsonAsync<FrequencyReport>("Api/Report?groupBy=Author"),
+            Http.GetFromJsonAsync<FrequencyReport>("Api/Report?groupBy=Century"),
+            Http.GetFromJsonAsync<FrequencyReport>("Api/Report?groupBy=Country")
+        );
+    }
+}

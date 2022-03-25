@@ -1,6 +1,7 @@
 ﻿@page "/addArtWork"
 @using LettersAnalyzer.Shared.Models
-@inject HttpClient http
+@using System.Text.Json
+@inject HttpClient Http
 
 <h3>Add artwork</h3>
 <RadzenCard>
@@ -24,20 +25,26 @@
         </p>
         <p>
             <RadzenLabel Component="Text" Text="Text" class="col-2"></RadzenLabel>
-            <RadzenTextArea Name="Text" class="col-12" @bind-Value="@_bodyText"></RadzenTextArea>
+            <RadzenTextArea Name="Text" class="col-12" @bind-Value="@_artWork.Body"></RadzenTextArea>
         </p>
         <p class="text-center">
-            <RadzenButton ButtonType="ButtonType.Submit" Text="Submit"></RadzenButton>
+            <RadzenButton ButtonType="ButtonType.Submit" Text="Submit" IsBusy=@_is_busy></RadzenButton>
         </p>
     </RadzenTemplateForm>
 </RadzenCard>
 
 @code {
     private ArtWork _artWork = new();
-    private string _bodyText = "";
-
+    private bool _is_busy = false;
     public async Task OnSubmit(ArtWork artWork)
     {
-        await Task.Delay(1000);
+        _is_busy = true;
+        
+        var result = await Http.PostAsJsonAsync("Api/ArtWorks", artWork);
+        if (!result.IsSuccessStatusCode)
+        {
+
+        }
+        _is_busy = false;
     }
 }

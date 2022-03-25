@@ -1,20 +1,27 @@
-﻿using MongoDB.Driver;
+﻿using LettersAnalyzer.Server.Settings;
+using LettersAnalyzer.Shared.Models;
+using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LettersAnalyzer.Shared.Models
+namespace LettersAnalyzer.Server.DataAccess
 {
     public class ApplicationDbContext
     {
         private readonly IMongoDatabase _mongoDatabase;
-        public ApplicationDbContext()
+        public ApplicationDbContext(IOptions<ArtWorkSettings> artWorkSettings)
         {
-            var client = new MongoClient("mongodb://localhost:27017");
-            _mongoDatabase = client.GetDatabase("ArtWorksDB");
+            var mongoClient = new MongoClient(
+            artWorkSettings.Value.ConnectionString);
+
+            _mongoDatabase = mongoClient.GetDatabase(
+                artWorkSettings.Value.DbName);
         }
+
         public IMongoCollection<ArtWork> ArtWorkRecord
         {
             get

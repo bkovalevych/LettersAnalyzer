@@ -1,0 +1,55 @@
+﻿@page "/artWorks"
+@using LettersAnalyzer.Shared.Models
+@inject HttpClient Http;
+
+<PageTitle>ArtWorks</PageTitle>
+
+<h1>ArtWorks</h1>
+@if (_artWorks == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <RadzenDataGrid 
+        AllowFiltering="true" 
+        AllowColumnResize="true" 
+        FilterMode="FilterMode.Advanced" 
+        PageSize="5" 
+        AllowPaging="true" 
+        AllowSorting="true" 
+        Data="@_artWorks" 
+        TItem="ArtWork" 
+        ColumnWidth="160px" 
+        LogicalFilterOperator="LogicalFilterOperator.Or"
+        SelectionMode="DataGridSelectionMode.Single">
+    <Columns>
+        <RadzenDataGridColumn 
+            TItem="ArtWork" 
+            Property="Name" 
+            Title="Name" />
+        <RadzenDataGridColumn 
+            TItem="ArtWork" 
+            Property="Century" 
+            Title="Century" />
+        <RadzenDataGridColumn 
+            TItem="ArtWork" 
+            Property="Author" 
+            Title="Author" />
+        <RadzenDataGridColumn 
+            TItem="ArtWork" 
+            Property="Country" 
+            Title="Country" />
+    </Columns>
+</RadzenDataGrid>
+}
+
+
+@code {
+    private List<ArtWork> _artWorks;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _artWorks = await Http.GetFromJsonAsync<List<ArtWork>>("api/artWorks");
+    }
+}

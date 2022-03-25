@@ -12,20 +12,24 @@ namespace LettersAnalyzer.Shared.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
-        public string Author { get; set; }
+        public string? Author { get; set; }
         
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
-        public string Country { get; set; }
+        public string? Country { get; set; }
 
-        public DateOnly Created { get; set; }
+        //public DateOnly Created { get; set; }
 
         public int Century { get; set; }
 
-        public string ArtWorkBodyId { get; set; }
+        public string? ArtWorkBodyId { get; set; }
 
-        public LetterFrequesncy LetterFrequesncy { get; set; }
+        public Dictionary<string, int> LetterFrequency { get; set; } = new Dictionary<string, int>();
+        public Dictionary<string, double> NormalizedLetterFrequency { get; set; } = new Dictionary<string, double>();
+
+        [BsonIgnore]
+        public string? Body { get; set; }
     }
 }
