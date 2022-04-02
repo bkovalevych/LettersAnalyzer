@@ -7,6 +7,7 @@
 <style>
     .char-component {
         margin-top: 10px;
+        height: 900px;
     }
 </style>
 <h1>Reports</h1>
@@ -29,7 +30,7 @@ else
                         <RadzenChart class="char-component" >
                             @foreach(var frequency in report.Frequencies)
                             {
-                                <RadzenAreaSeries Data="@frequency.Value" CategoryProperty="Letter" Title="@frequency.Label" ValueProperty="Count" />                   
+                                <RadzenBarSeries Data="@frequency.Value" CategoryProperty="Letter" Title="@frequency.Label" ValueProperty="Count" />                   
                             }
                         <RadzenValueAxis>
                             <RadzenGridLines Visible="true" />
