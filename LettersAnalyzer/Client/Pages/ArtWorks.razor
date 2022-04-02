@@ -1,0 +1,116 @@
+﻿@page "/artWorks"
+@using LettersAnalyzer.Shared.Models
+@inject HttpClient Http;
+
+<PageTitle>ArtWorks</PageTitle>
+
+<h1>ArtWorks</h1>
+@if (_artWorks == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <RadzenDataGrid
+        @ref="artWorksGrid"
+        AllowFiltering="true" 
+        AllowColumnResize="true" 
+        FilterMode="FilterMode.Advanced" 
+        PageSize="5" 
+        AllowPaging="true" 
+        AllowSorting="true"
+        AllowRowSelectOnRowClick="true"
+        Data="@_artWorks" 
+        TItem="ArtWork" 
+        ColumnWidth="160px"
+        EditMode="DataGridEditMode.Single"
+        LogicalFilterOperator="LogicalFilterOperator.Or"
+        SelectionMode="DataGridSelectionMode.Single"
+        RowUpdate="@OnUpdateRow"
+        @bind-Value=@_selectedArtWorks>
+    <Columns>
+        <RadzenDataGridColumn 
+            TItem="ArtWork" 
+            Property="Name" 
+            Title="Name" >
+            <EditTemplate Context="artWork">
+                <RadzenTextBox @bind-Value="artWork.Name" Style="width:100%" Name="Name"></RadzenTextBox>
+                <RadzenRequiredValidator Text="Name is required" Component="Name" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn 
+            TItem="ArtWork" 
+            Property="Century" 
+            Title="Century">
+            <EditTemplate Context="artWork">
+                <RadzenNumeric @bind-Value="artWork.Century" Style="width:100%" Name="Century" Max="21" TValue="int" Min="1"></RadzenNumeric>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn 
+            TItem="ArtWork" 
+            Property="Author" 
+            Title="Author" >
+            <EditTemplate Context="artWork">
+                <RadzenTextBox @bind-Value="artWork.Author" Style="width:100%" Name="Author"></RadzenTextBox>
+                <RadzenRequiredValidator Text="Author is required" Component="Author" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn 
+            TItem="ArtWork" 
+            Property="Country" 
+            Title="Country">
+            <EditTemplate Context="artWork">
+                <RadzenTextBox @bind-Value="artWork.Country" Style="width:100%" Name="Country"></RadzenTextBox>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ArtWork" Context="artWork" Sortable="false" Filterable="false">
+            <Template Context="artWork">
+                <RadzenButton 
+                    ButtonStyle="ButtonStyle.Light"
+                    class="m-1" 
+                    Icon="edit" 
+                    Click=@(args => EditArtWork(artWork)) 
+                    @onclick:stopPropagation="true"></RadzenButton>
+            </Template>
+            <EditTemplate Context="artWork">
+                    <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Primary" Class="m-1" Click="@((args) => SaveRow(artWork))">
+                    </RadzenButton>
+                    <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@((args) => CancelEdit(artWork))">
+                    </RadzenButton>
+                </EditTemplate>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+}
+
+
+@code {
+    private List<ArtWork> _artWorks;
+    private IList<ArtWork> _selectedArtWorks;
+    public RadzenDataGrid<ArtWork> artWorksGrid;
+    protected override async Task OnInitializedAsync()
+    {
+        _artWorks = await Http.GetFromJsonAsync<List<ArtWork>>("api/artWorks");
+    }
+
+    public async Task EditArtWork(ArtWork artWork)
+    {
+        await artWorksGrid.EditRow(artWork);
+    }
+
+    public async void SaveRow(ArtWork artWork)
+    {
+        await artWorksGrid.UpdateRow(artWork);
+        
+    }
+
+    public void CancelEdit(ArtWork artWork)
+    {
+        artWorksGrid.CancelEditRow(artWork);
+    }
+
+    public async Task OnUpdateRow(ArtWork artWork)
+    {
+        await Http.PutAsJsonAsync($"api/artWorks/{artWork.Id}", artWork);
+    }
+}

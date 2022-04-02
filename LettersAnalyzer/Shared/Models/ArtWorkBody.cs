@@ -7,8 +7,8 @@ namespace LettersAnalyzer.Shared.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
-        public string ArtWorkId { get; set; }
-        public string Body { get; set; }
+        public string? Id { get; set; }
+        public string? ArtWorkId { get; set; }
+        public string? Body { get; set; }
     }
 }
